@@ -24,7 +24,7 @@ var ajax = (function ajax() {
             $.ajax({
                 method: 'post',
                 url: url + 'areas/',
-                data: {'region': $('#region').val()}
+                data: {'region': $('#region').val(), 'city': $('#city').val()}
             }).done(function (html) {
                 $('div.area').html(html);
                 $('#area').chosen();
