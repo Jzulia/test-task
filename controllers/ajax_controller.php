@@ -8,7 +8,7 @@ class AjaxController {
         
         $territory = new Territory();
 
-        $cities = $territory->selectTerritory(2, $reg, 1);
+        $cities = $territory->selectTerritory(2, $reg);
 
         if (empty($cities))
             return false;
@@ -16,7 +16,7 @@ class AjaxController {
         $html = '<select  id="city" class="chosen-select" name="city" data-placeholder="Select City" required> <option></option>';
         foreach ($cities as $city) {
 
-            $html .= '<option value="' . $city->reg_id . '">' . $city->address . '</option>';
+            $html .= '<option value="' . $city->ter_id . '">' . $city->address . '</option>';
         }
 
         $html .= '</select>';
@@ -26,11 +26,15 @@ class AjaxController {
 
     public function areas() {
 
-        $reg = $_POST['region'];
+        $reg = intval($_POST['region']);
+        
+        $ter_pid = trim($_POST['city']);           
 
         $territory = new Territory();
 
-        $areas = $territory->selectTerritory(2, $reg, 2);
+        $areas = $territory->selectTerritory('>1', $reg, $ter_pid);
+        
+        if(empty($areas)) return false;
 
         $html = '<select  id="area" class="chosen-select" name="area"data-placeholder="Select Area" required> <option></option>';
         foreach ($areas as $area) {
@@ -44,8 +48,10 @@ class AjaxController {
     }
 
     public function saveUser() {
+        
+        $area = (isset($_POST['area']))? $_POST['area'] : $_POST['city'];
 
-        $user = new User($_POST['name'], $_POST['email'], $_POST['area']);
+        $user = new User($_POST['name'], $_POST['email'], $area);
 
         if (!($user->select($user->email))) {
             
